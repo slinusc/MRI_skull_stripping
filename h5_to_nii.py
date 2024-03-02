@@ -1,17 +1,33 @@
 import h5py
 import nibabel as nib
 import numpy as np
+from NeuroImageProcessor import  NeuroImageProcessor
 
-# Step 1: Read data from .h5 file
-with h5py.File('/home/saxermi1/test_data/test.h5', 'r') as h5_file:
-    image_data = h5_file['dataset_name'][()]  # Adjust 'dataset_name' to your specific dataset
 
-# Step 2: Process the data if necessary (e.g., reshaping)
-# This step depends on your data and might not always be necessary
+# Specify your desired output directory path here
+output_directory = '/home/saxermi1/test_data/'
 
-# Step 3: Create a NIfTI image
-nifti_img = nib.Nifti1Image(image_data, affine=np.eye(4))
+# Ensure your file name is as desired
+output_file_name = 'test_volume.nii'
 
-# Step 4: Save the NIfTI image to a file
-nib.save(nifti_img, '/home/saxermi1/test_data/output_filename.nii')
+# Combine the directory path and file name to create a full output path
+output_file_path = output_directory + output_file_name
 
+# Open the H5 file for reading
+with h5py.File('/home/hezo/stroke_zurich/data/dicom_2d_192x192x3_clean_interpolated_18_02_2021_preprocessed2.h5', 'r') as file:
+    # Extract the first volume from the dataset "X"
+    first_volume = file['X'][0]  #  extracts the first 3D volume (128x128x28) (adjust number to extract different one)
+
+    # Assuming an identity matrix for the affine transformation
+    affine_matrix = np.eye(4)
+    
+    # Create a NIfTI image object from the extracted volume
+    nifti_image = nib.Nifti1Image(first_volume, affine=affine_matrix)
+
+    # Save the NIfTI image to the specified file path
+    nib.save(nifti_image, output_file_path)
+    print("finished succsessfully under")
+    print(output_file_path)
+    
+    
+    
